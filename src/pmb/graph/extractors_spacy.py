@@ -65,9 +65,10 @@ def _load_nlp():
         last_err = None
         for name in candidates:
             try:
-                # Disable tagger/lemmatizer/parser pieces we don't use to keep
-                # ~40 % of init time and memory.
-                _NLP = spacy.load(name, disable=["lemmatizer", "attribute_ruler"])
+                # Disable pieces we don't use to save init time and memory.
+                # Keep attribute_ruler: in spaCy v3 pipelines it maps tag_ to
+                # pos_, and the concept filter below needs pos_.
+                _NLP = spacy.load(name, disable=["lemmatizer"])
                 _NLP_MODEL_NAME = name
                 log.info("graph.extractor=spacy loaded %s", name)
                 return _NLP
